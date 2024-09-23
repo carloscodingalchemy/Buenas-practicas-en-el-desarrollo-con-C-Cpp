@@ -1,24 +1,23 @@
 #include <stdio.h>
 
 // Rellena el nombre de la función con algo descriptivo
-void printParity(int number) {
-    if (number % 2 == 0) {
-        printf("El número %d es par.\n", number);
+void /* nombre_funcion */(int /* valor */) {
+    if (/* valor */ % 2 == 0) {
+        printf("El número %d es par.\n", /* valor */);
     } else {
-        printf("El número %d es impar.\n", number);
+        printf("El número %d es impar.\n", /* valor */);
     }
 }
 
-
 // Rellena los nombres de las variables para que sean claros
 int main() {
-    int userNumber;
+    int /* numero_usuario */;
     
     printf("Introduce un número: ");
-    scanf("%d", &userNumber);
+    scanf("%d", &/* numero_usuario */);
     
     // Llama a la función con un nombre más claro
-    printParity(userNumber);
+    /* nombre_funcion */(/* numero_usuario */);
     
     return 0;
 }

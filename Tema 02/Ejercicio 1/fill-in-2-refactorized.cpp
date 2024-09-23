@@ -5,9 +5,9 @@
 using namespace std;
 
 // Rellena el nombre de la función de forma descriptiva
-void /* nombre_funcion */(const vector<string>& /* nombres */) {
-    for (const string& /* nombre */ : /* nombres */) {
-        cout << "Hola, " << /* nombre */ << "!" << endl;
+void saludarPersonas(const vector<string>& listaPersonas) {
+    for (const string& listaPersonas : persona) {
+        cout << "Hola, " << persona << "!" << endl;
     }
 }
 
