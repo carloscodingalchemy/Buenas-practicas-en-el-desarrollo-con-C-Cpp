@@ -9,14 +9,19 @@ private:
 public:
     Sensor() : temperature(0.0), isCalibrated(false) {}
 
+    void initialize(void)
+    {
+        calibrate();
+        // Otras tareas de inicializacion
+    }
+
     // Esta función no sigue el principio de separación de consultas
     // porque no solo devuelve la temperatura, sino que también modifica el estado al calibrar.
     float getTemperature() {
-        if (!isCalibrated) {
-            calibrate();  // Modifica el estado al calibrar el sensor
-        }
+ 
         return temperature;
     }
+
 
     // Simula la actualización de la temperatura
     void updateTemperature(float temp) {
@@ -29,13 +34,19 @@ private:
         std::cout << "Calibrando sensor..." << std::endl;
         isCalibrated = true;
     }
+
+    bool isCalibrated(void)
+    {
+        return isCalibrated;
+    }
 };
 
 int main() {
     Sensor sensor;
 
-    // Actualizar la temperatura
-    sensor.updateTemperature(25.5);
+    sensor.initialize();
+
+    
 
     // Obtener la temperatura del sensor
     std::cout << "La temperatura es: " << sensor.getTemperature() << " C" << std::endl;

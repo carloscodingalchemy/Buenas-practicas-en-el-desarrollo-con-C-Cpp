@@ -27,27 +27,43 @@ char* UART_Receive() {
     return "OK";
 }
 
-// Función demasiado compleja que realiza múltiples tareas
-void processSensorsAndSendData() {
-    // Leer datos del sensor de temperatura y humedad
-    float temperature = readTemperatureSensor();
-    float humidity = readHumiditySensor();
+typedef struct
+{
+    float temperature;
+    float humidity;
+    uint16_t lightLevel;
+}SensorsData_t;
 
-    // Leer el sensor de luz
-    uint16_t lightLevel = readLightSensor();
 
+readSensors(float * temperature, float *humidity, uint16_t * lightLevel)
+{
+
+}
+
+
+SensorsData_t readSensors(void)
+{
+    SensorsData_t sensorsData;
+
+    sensorsData.temperature = readTemperatureSensor();
+    sensorsData.humidity = readHumiditySensor();
+    sensorsData.lightLevel = readLightSensor();
+
+    return sensorsData;
+}
+
+
+void createPayload(uint8_t * message, SensorsData_t SendorsData)
+{
     // Formatear los datos en un mensaje para enviarlo
-    char message[100];
-    snprintf(message, sizeof(message), "T: %.2f C, H: %.2f %%, L: %d lux", temperature, humidity, lightLevel);
+    snprintf(message, sizeof(message), "T: %.2f C, H: %.2f %%, L: %d lux", sensorData.temperature, sensorData.humidity, sensorData.lightLevel);
 
-    // Enviar los datos a través de la UART
-    UART_Send(message);
+}
 
-    // Esperar una respuesta del servidor
-    char* response = UART_Receive();
-
+void processModemResponse(const char * response, char * expectedResponse)
+{
     // Procesar la respuesta
-    if (strcmp(response, "OK") == 0) {
+    if (strcmp(response, expectedResponse) == 0) {
         // Respuesta exitosa
         printf("Datos enviados correctamente.\n");
     } else {
@@ -56,8 +72,43 @@ void processSensorsAndSendData() {
     }
 }
 
+// Función demasiado compleja que realiza múltiples tareas
+void processSensorsAndSendData() {
+
+
+    SensorsData_t sensorData;
+    sensorData = readSensors();
+
+    // Formatear los datos en un mensaje para enviarlo
+    char message[100];
+    createPayload(uint8_t * message, SensorsData_t SendorsData);
+
+    // Enviar los datos a través de la UART
+    UART_Send(message);
+
+    // Esperar una respuesta del servidor
+    char* response = UART_Receive();
+
+    processModemResponse(response, "OK");
+
+}
+
 int main() {
     // Ejecución de la función compleja
-    processSensorsAndSendData();
+    SensorsData_t sensorData;
+    sensorData = readSensors();
+
+    // Formatear los datos en un mensaje para enviarlo
+    char message[100];
+    createPayload(uint8_t * message, SensorsData_t SendorsData);
+
+    // Enviar los datos a través de la UART
+    UART_Send(message);
+
+    // Esperar una respuesta del servidor
+    char* response = UART_Receive();
+
+    processModemResponse(response, "OK");
+    
     return 0;
 }

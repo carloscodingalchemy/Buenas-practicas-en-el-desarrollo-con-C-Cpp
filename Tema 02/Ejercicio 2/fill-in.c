@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 // Rellena el nombre de la función con consistencia para el concepto "encontrar"
-int /* nombre_funcion_1 */(int arr[], int size, int target) {
+int findValueIndex(int arr[], int size, int targetValue) {
     for (int i = 0; i < size; i++) {
-        if (arr[i] == target) {
+        if (arr[i] == targetValue) {
             return i; // Devuelve el índice si encuentra el valor
         }
     }
@@ -11,7 +11,7 @@ int /* nombre_funcion_1 */(int arr[], int size, int target) {
 }
 
 // Rellena el nombre de la función con el mismo concepto para "encontrar"
-int /* nombre_funcion_2 */(int arr[], int size) {
+int findMaxValue(int arr[], int size) {
     int max = arr[0];
     for (int i = 1; i < size; i++) {
         if (arr[i] > max) {
