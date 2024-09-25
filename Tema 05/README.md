@@ -1,4 +1,4 @@
-# TEMA ## 5.5- FORMATO DEL CÓDIGO
+# TEMA 5 - FORMATO DEL CÓDIGO
 
 
 ## 5.1 ¿Qué es el formato y qué funcionalidad tiene?
