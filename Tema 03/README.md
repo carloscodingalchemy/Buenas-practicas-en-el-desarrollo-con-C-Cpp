@@ -632,6 +632,9 @@ En el caso de sistemas embebidos, esto puede ser especialmente crítico.
 El manejo adecuado de excepciones es crucial para asegurar que el código no falle de manera inesperada. Los bloques try/catch deben usarse para controlar errores y asegurar que el código fallará de manera segura y predecible.
 El manejo de excepciones debe ser claro y eficiente, evitando capturar excepciones genéricas o dejarlas sin tratar.
 
+Ver [std::exception](https://en.cppreference.com/w/cpp/error/exception)
+
+
 ```cpp
 #include <iostream>
 #include <stdexcept>
@@ -659,6 +662,7 @@ int main() {
     return 0;
 }
 ```
+
 
 ```cpp
 #include <iostream>
