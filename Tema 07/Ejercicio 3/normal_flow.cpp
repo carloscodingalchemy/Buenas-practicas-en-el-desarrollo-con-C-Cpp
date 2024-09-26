@@ -100,4 +100,4 @@ int main() {
     } catch (const GPIOException& e) {
         cout << "Excepción atrapada: " << e.what() << endl;
     }
-
+}

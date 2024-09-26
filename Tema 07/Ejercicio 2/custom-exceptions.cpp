@@ -2,38 +2,36 @@
 #include <stdexcept>  // Para std::runtime_error y otras excepciones estándar
 #include <string>
 
+// EJERCICIO: Implementar las clases de excepciones SPI personalizadas
+
 // Clase base para todas las excepciones SPI
 class SPIError : public std::runtime_error {
 public:
-    explicit SPIError(const std::string& message) : std::runtime_error(message) {}
+
 };
 
 // Excepción para errores de configuración de SPI
 class SPIConfigurationError : public SPIError {
 public:
-    explicit SPIConfigurationError(const std::string& message)
-        : SPIError("SPI Configuration Error: " + message) {}
+
 };
 
 // Excepción para errores de tiempo de espera (timeout)
 class SPITimeoutError : public SPIError {
 public:
-    explicit SPITimeoutError(const std::string& message)
-        : SPIError("SPI Timeout Error: " + message) {}
+
 };
 
 // Excepción para errores de transmisión
 class SPITransmissionError : public SPIError {
 public:
-    explicit SPITransmissionError(const std::string& message)
-        : SPIError("SPI Transmission Error: " + message) {}
+
 };
 
 // Excepción para errores de dispositivo no encontrado
 class SPIDeviceNotFoundError : public SPIError {
 public:
-    explicit SPIDeviceNotFoundError(const std::string& message)
-        : SPIError("SPI Device Not Found Error: " + message) {}
+
 };
 
 // Ejemplo de una clase que modela el SPI master
