@@ -6,7 +6,7 @@ Las excepciones facilitan el manejo de errores, permitiendo que el código en lo
 
 
 ## 7.2 Try/Catch
-La estructura try/catch/finally es fundamental en el manejo de excepciones en muchos lenguajes de programación:
+La estructura try/catch es fundamental en el manejo de excepciones en muchos lenguajes de programación:
 **try**: Bloque de código que contiene las instrucciones que pueden lanzar excepciones.
 **catch**: Bloque que captura y maneja las excepciones lanzadas desde el bloque try. Puede haber múltiples bloques catch para manejar diferentes tipos de excepciones.
 

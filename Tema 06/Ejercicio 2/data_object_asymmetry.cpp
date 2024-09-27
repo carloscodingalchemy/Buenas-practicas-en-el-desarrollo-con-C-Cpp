@@ -110,6 +110,20 @@ public:
     }
 };
 
+
+class SensorManager
+{
+    private:
+    std::vector<Sensor&> sensors;
+
+    public:
+    SensorManager() {}
+
+    addSensor(Sensor& sensor) {
+        sensors.push_back(sensor);
+    }
+}
+
 // Programa principal
 int main() {
     // Crear un sensor de temperatura con un período de lectura de 1000 ms
