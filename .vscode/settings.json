@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "ostream": "cpp",
+        "text_encoding": "cpp",
+        "typeinfo": "cpp",
+        "functional": "c",
+        "cstdint": "c",
+        "stdint.h": "c",
+        "compare": "c",
+        "*.tcc": "cpp"
+    },
+    "conventionalCommits.scopes": [
+        "coding_standard_clean-up"
+    ]
+}
