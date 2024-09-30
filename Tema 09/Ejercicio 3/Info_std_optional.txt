@@ -1,0 +1,3 @@
+Articulo sobre el valor std::nullopt del paquete <optional> del standard C++17
+
+https://www.educative.io/answers/what-is-stdnullopt-in-cpp

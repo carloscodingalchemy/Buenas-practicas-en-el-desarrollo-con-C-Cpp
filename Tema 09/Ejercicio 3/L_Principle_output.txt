@@ -1,0 +1,2 @@
+Temperature Sensor: 25
+Error Sensor: Error reading sensor value

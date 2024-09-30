@@ -1,86 +1,82 @@
 #include <iostream>
 #include <string>
 
-// Interfaz monolítica IDevice para dispositivos que combina sensores y actuadores
-class IDevice {
+// Interfaz abstracta para cualquier tipo de red
+class INetwork {
 public:
-    virtual float readValue() const = 0;   // Método para leer valores (solo para sensores)
-    virtual void activate() = 0;            // Método para activar (solo para actuadores)
-    virtual void deactivate() = 0;          // Método para desactivar (solo para actuadores)
-    virtual std::string getType() const = 0; // Obtener el tipo de dispositivo
-    virtual ~IDevice() = default;           // Destructor virtual
+    virtual void connect() = 0;
+    virtual void sendData(const std::string& data) = 0;
+    virtual void receiveData() = 0;
+
+    virtual ~INetwork() = default;
 };
 
-// Clase que implementa IDevice (sensor de temperatura)
-class TemperatureSensor : public IDevice {
+// Clase de bajo nivel que maneja la red WiFi, implementa la interfaz INetwork
+class WiFiNetwork : public INetwork {
+private:
+    std::string ssid;
+    std::string password;
+
 public:
-    float readValue() const override {
-        return 25.0f;  // Simulación de lectura de temperatura
+    // Constructor que inicializa ssid y password
+    WiFiNetwork(const std::string& ssid, const std::string& password)
+        : ssid(ssid), password(password) {}
+
+    // Implementación de la función connect
+    void connect() override {
+        std::cout << "Connecting to WiFi network: " << ssid << " with password: " << password << std::endl;
+        // Lógica de conexión...
     }
 
-    void activate() override {
-        // Implementación innecesaria para un sensor
-        throw std::runtime_error("TemperatureSensor cannot be activated.");
+    // Implementación de la función sendData
+    void sendData(const std::string& data) override {
+        std::cout << "Sending data: " << data << std::endl;
+        // Lógica para enviar datos...
     }
 
-    void deactivate() override {
-        // Implementación innecesaria para un sensor
-        throw std::runtime_error("TemperatureSensor cannot be deactivated.");
-    }
-
-    std::string getType() const override {
-        return "Temperature Sensor";
-    }
-};
-
-// Clase que implementa IDevice (ventilador)
-class Fan : public IDevice {
-public:
-    float readValue() const override {
-        // Implementación innecesaria para un actuador
-        throw std::runtime_error("Fan does not have a value to read.");
-    }
-
-    void activate() override {
-        std::cout << "Fan activated." << std::endl;
-    }
-
-    void deactivate() override {
-        std::cout << "Fan deactivated." << std::endl;
-    }
-
-    std::string getType() const override {
-        return "Fan";
+    // Implementación de la función receiveData
+    void receiveData() override {
+        std::cout << "Receiving data..." << std::endl;
+        // Lógica para recibir datos...
     }
 };
 
-// Función para mostrar la lectura de un dispositivo
-void displayDeviceValue(IDevice& device) {
-    try {
-        std::cout << device.getType() << ": " << device.readValue() << std::endl;
-    } catch (const std::runtime_error& e) {
-        std::cout << e.what() << std::endl;  // Manejo del error
-    }
-}
+// Clase de alto nivel que maneja la red, ahora usa una referencia a INetwork
+class NetworkManager {
+private:
+    INetwork& network; // Referencia a INetwork
 
-// Función para activar y desactivar un actuador
-void controlActuator(IDevice& actuator, bool activate) {
-    if (activate) {
-        actuator.activate();
-    } else {
-        actuator.deactivate();
+public:
+    // El constructor acepta cualquier clase que implemente INetwork
+    NetworkManager(INetwork& net) : network(net) {}
+
+    // Delegación de la función connect a través de la referencia
+    void connectToNetwork() {
+        network.connect();
     }
-}
+
+    // Delegación de la función sendData a través de la referencia
+    void sendData(const std::string& data) {
+        network.sendData(data);
+    }
+
+    // Delegación de la función receiveData a través de la referencia
+    void receiveData() {
+        network.receiveData();
+    }
+};
 
 int main() {
-    // Crear instancias de sensores y actuadores
-    TemperatureSensor tempSensor;
-    Fan fan;
+    // Creamos una instancia de WiFiNetwork con ssid y password
+    WiFiNetwork wifi("MyNetwork", "password123");
 
-    // Mostrar valores de los dispositivos
-    displayDeviceValue(tempSensor);   // "TemperatureSensor cannot be activated."
-    controlActuator(fan, true);       // "Fan activated."
-    displayDeviceValue(fan);           // "Fan does not have a value to read."
+    // Inyectamos la instancia de WiFiNetwork en el NetworkManager usando una referencia
+    NetworkManager networkManager(wifi);
+
+    // Ahora NetworkManager trabaja a través de la referencia a INetwork
+    networkManager.connectToNetwork();
+    networkManager.sendData("Hello, World!");
+    networkManager.receiveData();
 
     return 0;
 }
