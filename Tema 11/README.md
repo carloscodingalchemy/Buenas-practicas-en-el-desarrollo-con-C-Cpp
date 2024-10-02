@@ -300,6 +300,8 @@ int main() {
 }
 ```
 
+[PROTOBUF](https://developers.google.com/protocol-buffers)
+
 **Ventajas**: Los DSL permiten a los desarrolladores expresar soluciones de manera más natural y concisa dentro de su dominio específico. Facilitan la colaboración entre desarrolladores y expertos en el dominio, ya que estos últimos pueden interactuar con el sistema usando un lenguaje más cercano a su contexto.
 
 
