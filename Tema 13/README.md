@@ -213,7 +213,7 @@ int main() {
 }
 ```
 
-## 13.8 Las bibliotecas y su compatibilidad con los procesos
+## 13.4 Las bibliotecas y su compatibilidad con los procesos
 No todas las bibliotecas están diseñadas para ser usadas en entornos concurrentes. Es crucial seleccionar bibliotecas compatibles con procesos concurrentes que sean thread-safe.
 Thread-safe significa que una biblioteca puede ser usada por múltiples hilos al mismo tiempo sin riesgo de corromper los datos o causar comportamientos indeseados.
 
@@ -240,7 +240,7 @@ Ejemplos: En C++, bibliotecas como std::thread y std::mutex proporcionan primiti
 - **Clases y Objetos de C++**
   - Clases de usuario que utilizan datos compartidos sin mecanismos de sincronización.
 
-## 13.9 Los 3 distintos modelos de ejecución
+## 13.5 Los 3 distintos modelos de ejecución
 
 Existen tres modelos básicos de comportamiento en aplicaciones concurrentes:
 
@@ -364,18 +364,146 @@ void philosopher(int id) {
 
 
 
-## 13.10 La dependencia entre métodos sincronizados
+## 13.6 La dependencia entre métodos sincronizados
 La dependencia entre métodos sincronizados ocurre cuando varios métodos requieren sincronización para acceder a los mismos recursos compartidos. Este tipo de dependencia puede causar problemas como bloqueos o retardos si no se gestionan correctamente.
 Para minimizar estas dependencias, se debe reducir la cantidad de código que necesita sincronización, usar técnicas como el bloqueo de granularidad fina y aplicar un diseño que favorezca la independencia entre las partes del sistema.
 
-## 13.11 La importancia de reducir las partes sincronizadas
+```cpp
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+class BankAccount {
+private:
+    double balance;
+    std::mutex mtx;  // Mutex para proteger el acceso al balance
+
+public:
+    BankAccount(double initial_balance) : balance(initial_balance) {}
+
+    // Método para depositar dinero
+    void deposit(double amount) {
+        std::lock_guard<std::mutex> lock(mtx);  // Sincronización
+        std::cout << "Depositando " << amount << "...\n";
+        balance += amount;
+        std::cout << "Nuevo balance tras el deposito: " << balance << "\n";
+    }
+
+    // Método para retirar dinero
+    void withdraw(double amount) {
+        std::lock_guard<std::mutex> lock(mtx);  // Sincronización
+        if (balance >= amount) {
+            std::cout << "Retirando " << amount << "...\n";
+            balance -= amount;
+            std::cout << "Nuevo balance tras la retirada: " << balance << "\n";
+        } else {
+            std::cout << "Fondos insuficientes para retirar " << amount << "!\n";
+        }
+    }
+
+    // Método para transferir dinero entre dos cuentas
+    void transfer(BankAccount& to, double amount) {
+        // Sincronización manual usando dos mutexes (potencial para interbloqueo)
+        std::scoped_lock lock(mtx, to.mtx);  // Se bloquean ambos mutexes simultáneamente
+        if (balance >= amount) {
+            std::cout << "Transferencia de " << amount << " de esta cuenta a otra cuenta...\n";
+            balance -= amount;
+            to.balance += amount;
+            std::cout << "Transferencia completada. Nuevo balance: " << balance << "\n";
+        } else {
+            std::cout << "Fondos insuficientes para transferir " << amount << "!\n";
+        }
+    }
+};
+
+void threadFunction1(BankAccount& account) {
+    account.deposit(100);  // Hilo 1: realiza un depósito
+}
+
+void threadFunction2(BankAccount& account1, BankAccount& account2) {
+    account1.transfer(account2, 50);  // Hilo 2: realiza una transferencia
+}
+
+int main() {
+    BankAccount account1(200);  // Primera cuenta con $200
+    BankAccount account2(100);  // Segunda cuenta con $100
+
+    std::thread t1(threadFunction1, std::ref(account1));  // Hilo para hacer un depósito
+    std::thread t2(threadFunction2, std::ref(account1), std::ref(account2));  // Hilo para transferir dinero
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+```
+
+## 13.7 La importancia de reducir las partes sincronizadas
 La sincronización es necesaria para evitar conflictos entre procesos concurrentes que acceden a recursos compartidos, pero también introduce sobrecarga y puede causar problemas de rendimiento.
 Reducir las partes sincronizadas implica diseñar el sistema de manera que el código que requiere sincronización sea lo más pequeño y rápido posible, minimizando el impacto en el rendimiento.
 
-## 13.12 ¿Cómo probar adecuadamente un código con procesos?
+```cpp	
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <chrono>
+
+class DataProcessor {
+private:
+    std::vector<int> data;
+    std::mutex mtx;
+
+public:
+    // Constructor que inicializa los datos
+    DataProcessor(int size) {
+        data.resize(size, 0);
+    }
+
+    // Método que procesa todos los datos (sincronización excesiva)
+    void processData() {
+        std::lock_guard<std::mutex> lock(mtx);  // Bloquea todo el método
+
+        // Simula un procesamiento lento de datos
+        for (int i = 0; i < data.size(); ++i) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));  // Simula trabajo pesado
+            data[i] = i * 2;
+        }
+
+        std::cout << "Datos procesados.\n";
+    }
+
+    // Método para leer los datos de forma segura
+    int getData(int index) {
+        std::lock_guard<std::mutex> lock(mtx);  // Sincronización para lectura
+        if (index >= 0 && index < data.size()) {
+            return data[index];
+        }
+        return -1;
+    }
+};
+
+void threadFunction(DataProcessor& processor) {
+    processor.processData();  // Cada hilo intentará procesar los datos
+}
+
+int main() {
+    DataProcessor processor(10);  // Crear un DataProcessor con 10 elementos
+
+    std::thread t1(threadFunction, std::ref(processor));  // Hilo 1
+    std::thread t2(threadFunction, std::ref(processor));  // Hilo 2
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+```
+
+## 13.8 ¿Cómo probar adecuadamente un código con procesos?
 Probar código concurrente es considerablemente más difícil que probar código secuencial, debido a la naturaleza impredecible de la concurrencia. Las pruebas deben cubrir una amplia variedad de escenarios para detectar problemas como condiciones de carrera, bloqueos y desincronización de datos.
 
-Recomendacion: "Escribir tests que tengan el potencial de exponer problemas y ejecutarlos frecuentemente, con diferentes configuraciones programaticas, de sistema y de carga. Si un test falla alguna vez, busca la cause. No ignores el fallo porque al ejecutar el test de nuevo pase".
+Recomendacion: "Escribir tests que tengan el potencial de exponer problemas y ejecutarlos frecuentemente, con diferentes configuraciones programaticas, de sistema y de carga. Si un test falla alguna vez, busca la causa. No ignores el fallo porque al ejecutar el test de nuevo pase".
 
 Concretando esta recomendación un poco más tenemos estos consejos:
 
@@ -386,3 +514,100 @@ Concretando esta recomendación un poco más tenemos estos consejos:
 - Corre tu código concurrente con mas hilos que cores
 - Corre tu código concurrente en diferentes plataformas
 - Instrumenta tu código para tratar de forzar errores
+
+```cpp
+#include <iostream>
+#include <thread>
+#include <vector>
+#include <mutex>
+#include <cassert>
+
+// Clase BankAccount sin sincronización
+class BankAccount {
+private:
+    double balance;
+
+public:
+    BankAccount() : balance(0) {}
+
+    // Método para depositar dinero
+    void deposit(double amount) {
+        balance += amount;
+    }
+
+    // Método para retirar dinero
+    bool withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            return true;
+        }
+        return false;
+    }
+
+    // Obtener el balance actual
+    double getBalance() const {
+        return balance;
+    }
+};
+
+// Clase que envuelve a BankAccount para manejar concurrencia
+class ConcurrentBankAccount {
+private:
+    BankAccount account;
+    std::mutex mtx;
+
+public:
+    // Método concurrente para depositar
+    void deposit(double amount) {
+        std::lock_guard<std::mutex> lock(mtx);  // Sincronización en este nivel
+        account.deposit(amount);
+    }
+
+    // Método concurrente para retirar
+    bool withdraw(double amount) {
+        std::lock_guard<std::mutex> lock(mtx);  // Sincronización en este nivel
+        return account.withdraw(amount);
+    }
+
+    // Método concurrente para obtener el balance
+    double getBalance() const {
+        std::lock_guard<std::mutex> lock(mtx);  // Sincronización en este nivel
+        return account.getBalance();
+    }
+};
+
+// Función para simular operaciones concurrentes de depósito y retiro
+void simulateTransactions(ConcurrentBankAccount& account, int numIterations) {
+    for (int i = 0; i < numIterations; ++i) {
+        account.deposit(100);  // Deposita 100
+        account.withdraw(50);  // Retira 50
+    }
+}
+
+int main() {
+    ConcurrentBankAccount account;  // Usamos la clase envuelta en concurrencia
+
+    const int numThreads = 10;
+    const int numIterations = 1000;
+
+    std::vector<std::thread> threads;
+
+    // Ejecuta varias operaciones concurrentes desde múltiples hilos
+    for (int i = 0; i < numThreads; ++i) {
+        threads.emplace_back(simulateTransactions, std::ref(account), numIterations);
+    }
+
+    // Espera a que todos los hilos terminen
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    // Verifica el balance final esperado
+    double expectedBalance = numThreads * numIterations * 50;
+    std::cout << "Balance final: " << account.getBalance() << std::endl;
+    std::cout << "Balance esperado: " << expectedBalance << std::endl;
+
+    assert(account.getBalance() == expectedBalance);
+    return 0;
+}
+```
