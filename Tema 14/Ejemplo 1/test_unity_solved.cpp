@@ -1,8 +1,8 @@
-#include "unity.h"
 #include <stdint.h>
 #include <stddef.h>
 
 #include "spi.h"
+#include "unity.h"
 // Prototipo de la función a testear
 void spi_read(SPIPort* port, uint8_t* buffer);
 

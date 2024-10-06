@@ -16,7 +16,7 @@ El objetivo es evitar la dependencia directa entre componentes del sistema y per
 graph TB
     %% Definir los nodos principales como círculos concéntricos
     classDef outer fill:#f9a,stroke:#333,stroke-width:2px;
-    classDef middle fill:#7ff,stroke:#333,stroke-width:2px;
+    classDef middle fill:#aaa,stroke:#333,stroke-width:2px;
     classDef inner fill:#ffd,stroke:#333,stroke-width:2px;
     classDef core fill:#ccf,stroke:#333,stroke-width:2px;
 
@@ -642,20 +642,45 @@ int main() {
 }
 ```
 
+### 14.13.1 Tipos de test
+| **Tipo de Test**      | **Descripción**                                                                                       | **Objetivo**                                                                                                       |
+|-----------------------|-------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| **Tests Unitarios**   | Pruebas que verifican el funcionamiento de componentes individuales del software (funciones, métodos, clases). | Asegurar que cada unidad de código funcione correctamente en aislamiento.                                         |
+| **Tests de Integración** | Pruebas que evalúan la interacción entre múltiples módulos o componentes del sistema.              | Verificar que los módulos interactúen correctamente según las especificaciones y detecten problemas en las interfaces. |
+| **Tests de Sistema**  | Pruebas que evalúan el sistema completo como un todo, verificando que cumple con los requisitos especificados. | Validar que el sistema en su conjunto funcione según lo esperado y cumpla con los requisitos del cliente.         |
+| **Tests de Performance** | Pruebas que evalúan la capacidad de respuesta, estabilidad y escalabilidad del sistema bajo diferentes condiciones de carga. | Identificar cuellos de botella, asegurar que el sistema maneje la carga esperada y proporcionar un rendimiento aceptable. |
+| **Tests End-to-End**  | Pruebas que simulan escenarios de usuario completos para verificar que el sistema funcione correctamente desde el principio hasta el final. | Validar flujos de trabajo completos y asegurar que todas las partes del sistema funcionen bien juntas.            |
+
 
 
 ## 14.14 Configuración y redacción de pruebas unitarias
 Configurar y redactar pruebas unitarias implica diseñar pruebas que cubran todas las rutas críticas del código. Deben ser fáciles de leer, rápidas de ejecutar y cubrir tanto casos positivos como negativos.
 
-## 14.14.1 Corner Cases
+### 14.14.1 Corner Cases
 Las funciones o metodos suelen tener una serie de rangos en los que su funcionamiento es identico y entre esos rangos, hay algunos valores críticos (corner cases).
 Cada uno de los rangos puede probarse con un solo valor dentro del mismo. Pero los corner cases deben probarse en su totalidad. Puesto que son los puntos mas debiles de tu función.
+
+### 14.14.2 Unity (ThrowTheSwitch)
+Unity es un framework de pruebas unitarias que permite crear pruebas unitarias de manera sencilla en lenguaje C. Está especialmente diseñado para ser usado en sistemas embebidos o con constraints de memoria.
+
+[Unity](https://github.com/ThrowTheSwitch/Unity)
+
+
+### 14.14.3 GoogleTest
+Google Test es un framework de pruebas unitarias que permite crear pruebas unitarias de manera sencilla en lenguaje C++. Tiene características avanzadas como la posibilidad de crear mocks y stubs.
+
+[GoogleTest](https://github.com/google/googletest)
+
 
 ## 14.15 Recomendaciones profesionales para la automatización de ejecución de pruebas unitarias y de integración
 Las recomendaciones profesionales incluyen la automatización de las pruebas unitarias e integradas dentro del pipeline de CI/CD (Integración Continua y Despliegue Continuo), lo que garantiza que cada cambio en el código sea probado automáticamente antes de ser integrado al sistema principal.
 
 ## 14.15.1 Poner en marcha tu CI/CD
 Antes de automatizar pruebas, hay que tener una CI básica que compile el código y nos indique si hay errores. Posteriormente, añadir un nuevo "step" en el pipeline para ejecutar los tests es sencillo.
+
+[Unity test](https://gitlab.com/codingalchemy/unity_test_framework.git)
+[GoogleTest Test](https://gitlab.com/codingalchemy/googletest_test_framework.git)
+[CI_Test](https://gitlab.com/codingalchemy/ci_container)
 
 Los datos de tests ejecutados y cobertura pueden exportarse a una herramienta externa como SonarQube para tener un dashboard interactivo.
 
