@@ -678,8 +678,8 @@ Las recomendaciones profesionales incluyen la automatización de las pruebas uni
 ## 14.15.1 Poner en marcha tu CI/CD
 Antes de automatizar pruebas, hay que tener una CI básica que compile el código y nos indique si hay errores. Posteriormente, añadir un nuevo "step" en el pipeline para ejecutar los tests es sencillo.
 
-[Unity test](https://gitlab.com/codingalchemy/unity_test_framework.git)
-[GoogleTest Test](https://gitlab.com/codingalchemy/googletest_test_framework.git)
+[Unity test](https://gitlab.com/codingalchemy/unity_test_framework.git)  
+[GoogleTest Test](https://gitlab.com/codingalchemy/googletest_test_framework.git)  
 [CI_Test](https://gitlab.com/codingalchemy/ci_container)
 
 Los datos de tests ejecutados y cobertura pueden exportarse a una herramienta externa como SonarQube para tener un dashboard interactivo.
